@@ -151,11 +151,18 @@ public class PSConverter extends AbstractRemoteConverter {
 	    }
 
 	    FileInputStream fis = new FileInputStream(outputFile);
-	    byte[] content = new byte[(int) outputFile.length()];
-	    fis.read(content);
-	    fis.close();
-
-	    outputStream.write(content);
+//	    byte[] content = new byte[(int) outputFile.length()];
+//	    fis.read(content);
+//	    fis.close();
+//
+//	    outputStream.write(content);
+	    
+		byte[] buf = new byte[1024];
+		int bytesRead;
+		while ((bytesRead = fis.read(buf)) > 0) {
+			outputStream.write(buf, 0, bytesRead);
+		}
+		fis.close();
 
 	} catch (GhostscriptException e) {
 
@@ -171,7 +178,8 @@ public class PSConverter extends AbstractRemoteConverter {
 	    }
 
 	    // remove temporary files
-	    diskStore.removeFile(outputDiskStoreKey);
+	    // This is a bug with large files
+	    //diskStore.removeFile(outputDiskStoreKey);
 	    diskStore.removeFile(inputDiskStoreKey);
 	}
 
